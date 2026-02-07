@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Для Ани 💖 С 8 Марта!</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0a0e29;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    color: white;
+    overflow: hidden;
+}
+
+#container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+canvas {
+    position: absolute;
+    inset: 0;
+}
+
+#content {
+    position: relative;
+    z-index: 5;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.heart-animation {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 30px;
+}
+
+.heart-shape {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ff4d7d, #ff2f6d);
+    transform: rotate(-45deg);
+    border-radius: 15px 15px 0 0;
+    animation: heartbeat 1.5s infinite;
+    box-shadow: none !important;
+    filter: none !important;
+    position: relative;
+}
+
+.heart-shape::before,
+.heart-shape::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    border-radius: 50%;
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+.heart-shape::before { 
+    top: -50%; 
+    left: 0;
+}
+.heart-shape::after { 
+    top: 0; 
+    left: 50%; 
+}
+
+@keyframes heartbeat {
+    0%,100% { transform: rotate(-45deg) scale(1); }
+    25% { transform: rotate(-45deg) scale(1.1); }
+    50% { transform: rotate(-45deg) scale(1); }
+    75% { transform: rotate(-45deg) scale(1.08); }
+}
+
+.message {
+    background: rgba(10,14,41,.7);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.message-line {
+    margin: 12px 0;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.message-line.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.greeting {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.holiday {
+    font-size: 28px;
+    font-weight: 800;
+    color: #ffb6c1;
+    margin: 15px 0;
+}
+
+.wish {
+    font-size: 18px;
+    color: #e8f4ff;
+}
+
+.love {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ff4d7d;
+    margin: 20px 0;
+}
+
+.signature {
+    font-size: 18px;
+    color: #a0c8ff;
+    font-style: italic;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    z-index: 5;
+}
+</style>
+</head>
+
+<body>
+<div id="container">
+    <canvas id="bg"></canvas>
+    <canvas id="stars"></canvas>
+    <canvas id="hearts"></canvas>
+
+    <div id="content">
+        <div class="heart-animation">
+            <div class="heart-shape"></div>
+        </div>
+
+        <div class="message">
+            <div class="message-line greeting">Дорогая Аня,</div>
+            <div class="message-line holiday">С 8 Марта!</div>
+            <div class="message-line wish">Ты — тот человек,</div>
+            <div class="message-line wish">рядом с которым</div>
+            <div class="message-line wish">комфортно и тепло.</div>
+            <div class="message-line wish">&nbsp;</div>
+            <div class="message-line wish">Пусть каждый день</div>
+            <div class="message-line wish">приносит радость.</div>
+            <div class="message-line wish">&nbsp;</div>
+            <div class="message-line love">Люблю ❤️</div>
+            <div class="message-line signature">— Ильдар</div>
+        </div>
+        
+        <div class="footer">
+            С любовью и теплом 💖
+        </div>
+    </div>
+</div>
+
+<script>
+const heartsCanvas = document.getElementById('hearts');
+const ctx = heartsCanvas.getContext('2d');
+let hearts = [];
+
+function resize() {
+    heartsCanvas.width = innerWidth;
+    heartsCanvas.height = innerHeight;
+}
+resize();
+addEventListener('resize', resize);
+
+function createHeart() {
+    if (Math.random() < 0.3) {
+        hearts.push({
+            x: Math.random() * innerWidth,
+            y: -20,
+            emoji: '❤️',
+            size: 18,
+            speedY: Math.random() * 1.5 + 1,
+            opacity: 0.3 + Math.random() * 0.7
+        });
+    }
+}
+
+function drawHearts() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+    for (let i = hearts.length - 1; i >= 0; i--) {
+        const h = hearts[i];
+        h.y += h.speedY;
+
+        ctx.save();
+        ctx.globalAlpha = h.opacity;
+
+        // ❌ ЖЁСТКО УБРАНО СВЕЧЕНИЕ
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = 'transparent';
+
+        ctx.font = h.size + 'px "Segoe UI Emoji","Apple Color Emoji"';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(h.emoji, h.x, h.y);
+        ctx.restore();
+
+        if (h.y > innerHeight + 40) hearts.splice(i, 1);
+    }
+}
+
+function animate() {
+    createHeart();
+    drawHearts();
+    requestAnimationFrame(animate);
+}
+animate();
+
+// текст
+document.querySelectorAll('.message-line').forEach((el,i)=>{
+    setTimeout(()=>el.classList.add('visible'), 800 + i*250);
+});
+</script>
+</body>
+</html>
